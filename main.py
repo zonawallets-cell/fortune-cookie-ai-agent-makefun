@@ -56,6 +56,16 @@ def main() -> int:
     # precisely the validated characters and nothing else.
     with open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write(line)
+    # Read the file back and fail loudly if what landed on disk differs
+    # from the validated line: the written output must be byte-identical
+    # to what was validated, not merely what was passed to write().
+    with open(path, "r", encoding="utf-8", newline="") as f:
+        written = f.read()
+    if written != line:
+        raise ValueError(
+            "written output does not match validated fortune "
+            "(%r != %r)" % (written, line)
+        )
     return 0
 
 
